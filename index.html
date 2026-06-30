@@ -1,19 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shiori</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Shiori</h1>
-    <input type="text" id="searchInput">
-    <button id="searchBtn">Search</button>
-    <div id="results">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="mainHeadline">
+        <img src="logo.png" alt="Shiori" id="logo" title="Shiori" />
+        <h1 id="logoText" title="Shiori">Shiori</h1>
+      </div>
+      <div class="searchWrapper">
+        <input type="text" placeholder="Поиск..." id="searchInput" />
+      </div>
+    </header>
+    <div id="results"></div>
 
-    </div>
-    
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
