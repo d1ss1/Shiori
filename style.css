@@ -1,4 +1,4 @@
-@import url('https://cdnfonts.com');
+@import url("https://cdnfonts.com");
 * {
   margin: 0;
   padding: 0;
@@ -15,30 +15,29 @@ header {
   padding: 0px 40px;
 
   background: rgb(65, 65, 65);
-
 }
 #logo {
-    height: 40px;
+  height: 40px;
 }
 #logoText {
-    font-family: 'Serati', sans-serif;
-    text-transform: uppercase;
-    color: white;
-    font-size: 32px;
+  font-family: "Serati", sans-serif;
+  text-transform: uppercase;
+  color: white;
+  font-size: 32px;
 }
 .mainHeadline {
   display: flex;
   align-items: center;
-  gap: 10px;  
+  gap: 10px;
   flex: 0 1 auto;
 }
 .searchWrapper {
-    display: flex;
-    justify-content: center;
-    flex: 1;
+  display: flex;
+  justify-content: center;
+  flex: 1;
 }
 #searchInput {
-    padding: 8px 750px 8px 12px;
-    border-radius: 32px;
-    border: 0;
+  padding: 8px 750px 8px 12px;
+  border-radius: 32px;
+  border: 0;
 }
