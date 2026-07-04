@@ -5,9 +5,14 @@ function renderData(animeList) {
   animeGrid.innerHTML = "";
   animeList.forEach(element => {
     const divCard = document.createElement("div");
+    const spanCard = document.createElement("span");
+    const posterImg = document.createElement("img");
+    posterImg.src = element.images.jpg.image_url
     divCard.classList.add("card");
-    divCard.textContent = element.title;
-    animeGrid.appendChild(divCard)
+    divCard.appendChild(posterImg);
+    spanCard.textContent = element.title;
+    divCard.appendChild(spanCard);
+    animeGrid.appendChild(divCard);
   });
 } 
 searchInput.addEventListener("keydown", function (event) {
