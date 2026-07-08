@@ -1,5 +1,6 @@
 const searchInput = document.getElementById("searchInput");
 const animeGrid = document.querySelector(".animeGrid");
+const logoText = document.querySelector("logoText");
 
 function renderData(animeList) {
   animeGrid.innerHTML = "";
@@ -18,33 +19,43 @@ function renderData(animeList) {
 searchInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     const text = searchInput.value.trim();
-    fetch(`https://api.jikan.moe/v4/anime?q=${text}`)
-      .then((response) => {
+    async function searchAnime() {
+      const searchUrl = `https://api.jikan.moe/v4/anime?q=${text}`;
+
+      try {
+        console.log("sending a request");
+        const response = await fetch(searchUrl);
+
         if (!response.ok) {
           throw new Error(`Server error, status: ${response.status}`);
-        } else {
-          return response.json();
         }
-      })
-      .then((data) => {
-        renderData(data.data);
-      })
-      .catch((error) => {
+        const searchData = await response.json();
+        renderData(searchData.data);
+        return searchData;
+      } catch (error) {
         console.error("Error during request:", error.message);
-      });
+      }
+    }
+    searchAnime();
   }
 });
-fetch("https://api.jikan.moe/v4/top/anime")
-  .then((response) => {
+
+async function loadTopAnime() {
+  const topUrl = "https://api.jikan.moe/v4/top/anime";
+
+  try {
+    console.log("sending a request");
+    const response = await fetch(topUrl);
+
     if (!response.ok) {
       throw new Error(`Server error, status: ${response.status}`);
-    } else {
-      return response.json();
     }
-  })
-  .then((data) => {
-    renderData(data.data);
-  })
-  .catch((error) => {
+    const topData = await response.json();
+    renderData(topData.data);
+    return topData;
+  } catch (error) {
     console.error("Error during request:", error.message);
-  });
+    return [];
+  }
+}
+loadTopAnime();
