@@ -2,35 +2,59 @@ const searchInput = document.getElementById("searchInput");
 const animeGrid = document.querySelector(".animeGrid");
 const logoText = document.querySelector("logoText");
 
+let animeData = [];
+let currentlang = "English";
+const query = `{ animes(limit: 100, order: popularity) { id name russian poster { originalUrl } } }`;
+
 function renderData(animeList) {
   animeGrid.innerHTML = "";
   animeList.forEach((element) => {
     const divCard = document.createElement("div");
     const spanCard = document.createElement("span");
+    spanCard.textContent = (function (anime) {
+      return currentlang === "English"
+        ? anime.name
+        : anime.russian || anime.name;
+    })(element);
     const posterImg = document.createElement("img");
-    posterImg.src = element.images.jpg.image_url;
+    posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
     divCard.appendChild(posterImg);
-    spanCard.textContent = element.title;
     divCard.appendChild(spanCard);
     animeGrid.appendChild(divCard);
   });
 }
+document.getElementById("langRu").addEventListener("click", function (event) {
+  currentlang = "Russian";
+  renderData(animeData);
+});
+document.getElementById("langEng").addEventListener("click", function (event) {
+  currentlang = "English";
+  renderData(animeData);
+});
 searchInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
     const text = searchInput.value.trim();
     async function searchAnime() {
-      const searchUrl = `https://api.jikan.moe/v4/anime?q=${text}`;
+      const searchUrl = "https://shikimori.io/api/graphql";
+      const searchOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: `{ animes(limit: 100, search: "${text}") { id name russian poster { originalUrl } } }`,
+        }),
+      };
 
       try {
         console.log("sending a request");
-        const response = await fetch(searchUrl);
+        const response = await fetch(searchUrl, searchOptions);
 
         if (!response.ok) {
           throw new Error(`Server error, status: ${response.status}`);
         }
         const searchData = await response.json();
-        renderData(searchData.data);
+        animeData = searchData.data.animes;
+        renderData(searchData.data.animes);
         return searchData;
       } catch (error) {
         console.error("Error during request:", error.message);
@@ -41,17 +65,23 @@ searchInput.addEventListener("keydown", function (event) {
 });
 
 async function loadTopAnime() {
-  const topUrl = "https://api.jikan.moe/v4/top/anime";
+  const topUrl = "https://shikimori.io/api/graphql";
+  const topOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query }),
+  };
 
   try {
     console.log("sending a request");
-    const response = await fetch(topUrl);
+    const response = await fetch(topUrl, topOptions);
 
     if (!response.ok) {
       throw new Error(`Server error, status: ${response.status}`);
     }
     const topData = await response.json();
-    renderData(topData.data);
+    animeData = topData.data.animes;
+    renderData(topData.data.animes);
     return topData;
   } catch (error) {
     console.error("Error during request:", error.message);
