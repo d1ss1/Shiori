@@ -12,9 +12,12 @@ function renderData(animeList) {
     const divCard = document.createElement("div");
     const spanCard = document.createElement("span");
     spanCard.textContent = (function (anime) {
-      return currentlang === "English"
-        ? anime.name
-        : anime.russian || anime.name;
+      const title = currentlang === "English"
+      ? anime.name
+      : anime.russian || anime.name;
+        return title.length > 18
+        ? title.slice(0, 18) + "..."
+        : title;
     })(element);
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
