@@ -4,7 +4,7 @@ const logoText = document.querySelector("logoText");
 
 let animeData = [];
 let currentlang = "English";
-const query = `{ animes(limit: 100, order: popularity) { id name russian poster { originalUrl } } }`;
+const query = `{ animes(limit: 48) { id name russian poster { originalUrl } } }`;
 
 function renderData(animeList) {
   animeGrid.innerHTML = "";
@@ -41,7 +41,7 @@ searchInput.addEventListener("keydown", function (event) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `{ animes(limit: 100, search: "${text}") { id name russian poster { originalUrl } } }`,
+          query: `{ animes(limit: 50, search: "${text}") { id name russian poster { originalUrl } } }`,
         }),
       };
 
