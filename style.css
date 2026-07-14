@@ -110,3 +110,9 @@ main {
   height: 300px;
   object-fit: cover;
 }
+.meta {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 15px;
+}

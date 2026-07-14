@@ -10,6 +10,7 @@ const kindLabels = {
   movie: "Movie",
   ova: "OVA",
   ona: "ONA",
+  special: "Special",
   tv_special: "TV Special",
 };
 
@@ -17,6 +18,7 @@ function renderData(animeList) {
   animeGrid.innerHTML = "";
   animeList.forEach((element) => {
     const divCard = document.createElement("div");
+    const meta = document.createElement("div");
     const spanCard = document.createElement("span");
     const kind = document.createElement("span");
     const airedOn = document.createElement("span");
@@ -30,10 +32,12 @@ function renderData(animeList) {
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
+    meta.classList.add("meta");
     divCard.appendChild(posterImg);
     divCard.appendChild(spanCard);
-    divCard.appendChild(kind);
-    divCard.appendChild(airedOn);
+    meta.appendChild(kind);
+    meta.appendChild(airedOn);
+    divCard.appendChild(meta);
     animeGrid.appendChild(divCard);
   });
 }
