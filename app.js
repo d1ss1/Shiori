@@ -4,26 +4,36 @@ const logoText = document.querySelector("logoText");
 
 let animeData = [];
 let currentlang = "English";
-const query = `{ animes(limit: 48) { id name russian poster { originalUrl } } }`;
+const query = `{ animes(limit: 48) { id name russian kind airedOn { year } poster { originalUrl } } }`;
+const kindLabels = {
+  tv: "TV Series",
+  movie: "Movie",
+  ova: "OVA",
+  ona: "ONA",
+  tv_special: "TV Special",
+};
 
 function renderData(animeList) {
   animeGrid.innerHTML = "";
   animeList.forEach((element) => {
     const divCard = document.createElement("div");
     const spanCard = document.createElement("span");
+    const kind = document.createElement("span");
+    const airedOn = document.createElement("span");
     spanCard.textContent = (function (anime) {
-      const title = currentlang === "English"
-      ? anime.name
-      : anime.russian || anime.name;
-        return title.length > 18
-        ? title.slice(0, 18) + "..."
-        : title;
+      const title =
+        currentlang === "English" ? anime.name : anime.russian || anime.name;
+      return title.length > 18 ? title.slice(0, 18) + "..." : title;
     })(element);
+    kind.textContent = kindLabels[element.kind] || element.kind;
+    airedOn.textContent = element.airedOn.year;
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
     divCard.appendChild(posterImg);
     divCard.appendChild(spanCard);
+    divCard.appendChild(kind);
+    divCard.appendChild(airedOn);
     animeGrid.appendChild(divCard);
   });
 }
@@ -44,7 +54,7 @@ searchInput.addEventListener("keydown", function (event) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `{ animes(limit: 50, search: "${text}") { id name russian poster { originalUrl } } }`,
+          query: `{ animes(limit: 50, search: "${text}") { id name russian kind airedOn { year } poster { originalUrl } } }`,
         }),
       };
 
