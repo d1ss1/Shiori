@@ -19,24 +19,23 @@ function renderData(animeList) {
   animeList.forEach((element) => {
     const divCard = document.createElement("div");
     const meta = document.createElement("div");
+    const spanName = document.createElement("div");
     const spanCard = document.createElement("span");
     const kind = document.createElement("span");
     const airedOn = document.createElement("span");
-    spanCard.textContent = (function (anime) {
-      const title =
-        currentLang === "English" ? anime.name : anime.russian || anime.name;
-      return title.length > 18 ? title.slice(0, 18) + "..." : title;
-    })(element);
+    spanCard.textContent = currentLang === "English" ? element.name : element.russian || element.name;
     kind.textContent = kindLabels[element.kind] || element.kind;
     airedOn.textContent = element.airedOn.year;
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
     meta.classList.add("meta");
+    spanName.classList.add("name");
     divCard.appendChild(posterImg);
-    divCard.appendChild(spanCard);
+    spanName.appendChild(spanCard);
     meta.appendChild(kind);
     meta.appendChild(airedOn);
+    divCard.appendChild(spanName);
     divCard.appendChild(meta);
     animeGrid.appendChild(divCard);
   });
