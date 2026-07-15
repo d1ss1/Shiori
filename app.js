@@ -3,7 +3,7 @@ const animeGrid = document.querySelector(".animeGrid");
 const logoText = document.querySelector("logoText");
 
 let animeData = [];
-let currentlang = "English";
+let currentLang = "English";
 const query = `{ animes(limit: 48) { id name russian kind airedOn { year } poster { originalUrl } } }`;
 const kindLabels = {
   tv: "TV Series",
@@ -24,7 +24,7 @@ function renderData(animeList) {
     const airedOn = document.createElement("span");
     spanCard.textContent = (function (anime) {
       const title =
-        currentlang === "English" ? anime.name : anime.russian || anime.name;
+        currentLang === "English" ? anime.name : anime.russian || anime.name;
       return title.length > 18 ? title.slice(0, 18) + "..." : title;
     })(element);
     kind.textContent = kindLabels[element.kind] || element.kind;
@@ -42,11 +42,11 @@ function renderData(animeList) {
   });
 }
 document.getElementById("langRu").addEventListener("click", function (event) {
-  currentlang = "Russian";
+  currentLang = "Russian";
   renderData(animeData);
 });
 document.getElementById("langEng").addEventListener("click", function (event) {
-  currentlang = "English";
+  currentLang = "English";
   renderData(animeData);
 });
 searchInput.addEventListener("keydown", function (event) {
