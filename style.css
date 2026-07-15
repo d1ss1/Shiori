@@ -103,7 +103,8 @@ main {
 .animeGrid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  gap: 15px;
+  row-gap: 25px;
 }
 .card {
   min-width: 0;
