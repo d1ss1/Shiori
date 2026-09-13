@@ -4,7 +4,7 @@ const logoText = document.querySelector("logoText");
 
 let animeData = [];
 let currentLang = "English";
-const query = `{ animes(limit: 48) { id name russian kind airedOn { year } poster { originalUrl } } }`;
+const query = `{ animes(limit: 48) { id name russian kind airedOn { year } poster { originalUrl } rating score status episodes description } }`;
 const kindLabels = {
   tv: "TV Series",
   movie: "Movie",
@@ -13,22 +13,40 @@ const kindLabels = {
   special: "Special",
   tv_special: "TV Special",
 };
+const statusLabel = {
+  released:  { English: "Released", Russian: "Вышло" },
+  ongoing: { English: "Ongoing", Russian: "В процессе" },
+  anons: { English: "Anons", Russian: "Анонс" },
+};
 
 function renderData(animeList) {
   animeGrid.innerHTML = "";
   animeList.forEach((element) => {
     const divCard = document.createElement("div");
+    const divPopover = document.createElement("div");
     const meta = document.createElement("div");
     const spanName = document.createElement("div");
     const spanCard = document.createElement("span");
     const kind = document.createElement("span");
+    const divDescr = document.createElement("div");
+    const divStatus = document.createElement("div");
+    const divEpisodes = document.createElement("div");
+    const divScore = document.createElement("div");
     const airedOn = document.createElement("span");
+    const prefixStatus = currentLang === "English" ? "Status: " : "Статус: "
+    const prefixEpisodes = currentLang === "English" ? "Episodes: " : "Эпизодов: "
+    const prefixScore = currentLang === "English" ? "rating " : "рейтинг "
     spanCard.textContent = currentLang === "English" ? element.name : element.russian || element.name;
     kind.textContent = kindLabels[element.kind] || element.kind;
     airedOn.textContent = element.airedOn.year;
+    divDescr.textContent =  element.description.replace(/\[.*?\]/g, "") || "no description";
+    divStatus.textContent = prefixStatus + (statusLabel[element.status] ?  statusLabel[element.status][currentLang] : "no status");
+    divEpisodes.textContent = prefixEpisodes + (element.episodes || "no episodes");
+    divScore.textContent = prefixScore + (element.score || "no rating");
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
+    divPopover.classList.add("popover");
     meta.classList.add("meta");
     spanName.classList.add("name");
     divCard.appendChild(posterImg);
@@ -38,13 +56,18 @@ function renderData(animeList) {
     divCard.appendChild(spanName);
     divCard.appendChild(meta);
     animeGrid.appendChild(divCard);
+    divCard.appendChild(divPopover);
+    divPopover.appendChild(divDescr);
+    divPopover.appendChild(divStatus);
+    divPopover.appendChild(divEpisodes);
+    divPopover.appendChild(divScore);
   });
 }
-document.getElementById("langRu").addEventListener("click", function (event) {
+document.getElementById("langRu").addEventListener("click", function () {
   currentLang = "Russian";
   renderData(animeData);
 });
-document.getElementById("langEng").addEventListener("click", function (event) {
+document.getElementById("langEng").addEventListener("click", function () {
   currentLang = "English";
   renderData(animeData);
 });
@@ -57,7 +80,7 @@ searchInput.addEventListener("keydown", function (event) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: `{ animes(limit: 50, search: "${text}") { id name russian kind airedOn { year } poster { originalUrl } } }`,
+          query: `{ animes(limit: 50, search: "${text}") { id name russian kind airedOn { year } poster { originalUrl }  rating score status episodes description description } }`,
         }),
       };
 
