@@ -1,6 +1,6 @@
 const searchInput = document.getElementById("searchInput");
 const animeGrid = document.querySelector(".animeGrid");
-const logoText = document.querySelector("logoText");
+const logoText = document.getElementById("logoText");
 
 let animeData = [];
 let currentLang = "English";
@@ -14,9 +14,9 @@ const kindLabels = {
   tv_special: "TV Special",
 };
 const statusLabel = {
-  released: { English: "Released", Russian: "Вышло" },
-  ongoing: { English: "Ongoing", Russian: "В процессе" },
-  anons: { English: "Anons", Russian: "Анонс" },
+  released: { English: "released", Russian: "завершено" },
+  ongoing: { English: "ongoing", Russian: "онгоинг" },
+  anons: { English: "anons", Russian: "анонс" },
 };
 
 function renderData(animeList) {
@@ -34,8 +34,12 @@ function renderData(animeList) {
     const divEpisodes = document.createElement("div");
     const divScore = document.createElement("div");
     const airedOn = document.createElement("span");
+    const spanStatusLabel = document.createElement("span");
+    const spanStatusValue = document.createElement("span");
+    const spanScoreValue = document.createElement("span");
 
-    const prefixStatus = currentLang === "English" ? "Status: " : "Статус: ";
+    spanStatusLabel.textContent = currentLang === "English" ? "type: " : "тип: ";
+    spanStatusValue.textContent = statusLabel[element.status] ? statusLabel[element.status][currentLang] : "no status";
     const prefixEpisodes =
       currentLang === "English" ? "Episodes: " : "Эпизодов: ";
     const prefixScore = currentLang === "English" ? "rating " : "рейтинг ";
@@ -51,25 +55,25 @@ function renderData(animeList) {
       cleanText = cleanText.slice(0, 155) + "...";
     }
     divDescr.textContent = cleanText;
-    divStatus.textContent =
-      prefixStatus +
-      (statusLabel[element.status]
-        ? statusLabel[element.status][currentLang]
-        : "no status");
     divEpisodes.textContent =
       prefixEpisodes + (element.episodes || "no episodes");
     hTitle.textContent =
       currentLang === "English"
         ? element.name
         : element.russian || element.name;
-    divScore.textContent = prefixScore + (element.score || "no rating");
+    divScore.textContent = prefixScore;
+    spanScoreValue.textContent = element.score || "no rating"
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
     divPopover.classList.add("popover");
+    spanStatusValue.classList.add("statusBadge", element.status)
     meta.classList.add("meta");
     spanName.classList.add("name");
     hTitle.classList.add("popoverTitle");
+    divStatus.classList.add("statusContainer");
+    spanScoreValue.classList.add("scoreValue");
+    divScore.classList.add("score");
     divCard.appendChild(posterImg);
     spanName.appendChild(spanCard);
     meta.appendChild(kind);
@@ -83,6 +87,9 @@ function renderData(animeList) {
     divPopover.appendChild(divStatus);
     divPopover.appendChild(divEpisodes);
     divPopover.appendChild(divScore);
+    divStatus.appendChild(spanStatusLabel);
+    divStatus.appendChild(spanStatusValue);
+    divScore.appendChild(spanScoreValue);
   });
 }
 document.getElementById("langRu").addEventListener("click", function () {
