@@ -1,6 +1,8 @@
 const searchInput = document.getElementById("searchInput");
 const animeGrid = document.querySelector(".animeGrid");
 const logoText = document.getElementById("logoText");
+const mainHeadline = document.querySelector(".mainHeadline");
+const animeDetails = document.getElementById("animeDetails");
 
 let animeData = [];
 let currentLang = "English";
@@ -38,8 +40,16 @@ function renderData(animeList) {
     const spanStatusValue = document.createElement("span");
     const spanScoreValue = document.createElement("span");
 
-    spanStatusLabel.textContent = currentLang === "English" ? "type: " : "тип: ";
-    spanStatusValue.textContent = statusLabel[element.status] ? statusLabel[element.status][currentLang] : "no status";
+    divCard.addEventListener("click", function(event) {
+     animeGrid.classList.add("hidden");
+     animeDetails.classList.remove("hidden");
+     console.log(element.id);
+    });
+    spanStatusLabel.textContent =
+      currentLang === "English" ? "type: " : "тип: ";
+    spanStatusValue.textContent = statusLabel[element.status]
+      ? statusLabel[element.status][currentLang]
+      : "no status";
     const prefixEpisodes =
       currentLang === "English" ? "Episodes: " : "Эпизодов: ";
     const prefixScore = currentLang === "English" ? "rating " : "рейтинг ";
@@ -49,8 +59,14 @@ function renderData(animeList) {
         : element.russian || element.name;
     kind.textContent = kindLabels[element.kind] || element.kind;
     airedOn.textContent = element.airedOn.year;
+    let rawText;
+    if (element.description) {
+      rawText = element.description;
+    } else {
+      rawText = currentLang === "English" ? "no description" : "отсутствует описание";
+    }
     let cleanText =
-      element.description.replace(/\[.*?\]/g, "") || "no description";
+      rawText.replace(/\[.*?\]/g, "") || "no description";
     if (cleanText.length > 155) {
       cleanText = cleanText.slice(0, 155) + "...";
     }
@@ -62,12 +78,12 @@ function renderData(animeList) {
         ? element.name
         : element.russian || element.name;
     divScore.textContent = prefixScore;
-    spanScoreValue.textContent = element.score || "no rating"
+    spanScoreValue.textContent = element.score || "no rating";
     const posterImg = document.createElement("img");
     posterImg.src = element.poster.originalUrl;
     divCard.classList.add("card");
     divPopover.classList.add("popover");
-    spanStatusValue.classList.add("statusBadge", element.status)
+    spanStatusValue.classList.add("statusBadge", element.status);
     meta.classList.add("meta");
     spanName.classList.add("name");
     hTitle.classList.add("popoverTitle");
@@ -92,6 +108,12 @@ function renderData(animeList) {
     divScore.appendChild(spanScoreValue);
   });
 }
+mainHeadline.addEventListener("click", function () {
+  searchInput.value = "";
+  animeGrid.classList.remove("hidden");
+  animeDetails.classList.add("hidden");
+  loadTopAnime();
+});
 document.getElementById("langRu").addEventListener("click", function () {
   currentLang = "Russian";
   renderData(animeData);

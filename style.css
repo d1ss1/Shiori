@@ -27,13 +27,13 @@ header {
   text-transform: uppercase;
   color: white;
   font-size: 32px;
-  cursor: default;
 }
 .mainHeadline {
   display: flex;
   align-items: center;
   gap: 10px;
   flex: 0 1 auto;
+  cursor: pointer;
 }
 .searchWrapper {
   display: flex;
@@ -218,4 +218,7 @@ main {
   left: auto;
   border-left-color: white;
   border-right-color: transparent;
+}
+.hidden {
+  display: none;
 }
