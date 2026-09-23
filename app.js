@@ -40,10 +40,10 @@ function renderData(animeList) {
     const spanStatusValue = document.createElement("span");
     const spanScoreValue = document.createElement("span");
 
-    divCard.addEventListener("click", function(event) {
-     animeGrid.classList.add("hidden");
-     animeDetails.classList.remove("hidden");
-     console.log(element.id);
+    divCard.addEventListener("click", function (event) {
+      animeGrid.classList.add("hidden");
+      animeDetails.classList.remove("hidden");
+      loadAnimeDetails(element.id)
     });
     spanStatusLabel.textContent =
       currentLang === "English" ? "type: " : "тип: ";
@@ -63,10 +63,10 @@ function renderData(animeList) {
     if (element.description) {
       rawText = element.description;
     } else {
-      rawText = currentLang === "English" ? "no description" : "отсутствует описание";
+      rawText =
+        currentLang === "English" ? "no description" : "отсутствует описание";
     }
-    let cleanText =
-      rawText.replace(/\[.*?\]/g, "") || "no description";
+    let cleanText = rawText.replace(/\[.*?\]/g, "") || "no description";
     if (cleanText.length > 155) {
       cleanText = cleanText.slice(0, 155) + "...";
     }
@@ -178,4 +178,36 @@ async function loadTopAnime() {
     return [];
   }
 }
+
+async function loadAnimeDetails(id) {
+  const searchDetails = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query: `{ animes(ids: "${id}"){ id name russian kind poster { originalUrl } rating score status episodes description } }`,
+    }),
+  };
+  const response = await fetch(
+    "https://shikimori.io/api/graphql",
+    searchDetails,
+  );
+  const detailsData = await response.json();
+  const anime = detailsData.data.animes[0];
+  animeDetails.innerHTML = "";
+  const title = document.createElement("h2")
+  title.textContent = currentLang === "English" ? anime.name : (anime.russian || anime.name);
+  animeDetails.appendChild(title);
+  const contentWrapper = document.createElement("div");
+  contentWrapper.classList.add("wrapper");
+  const posterImg = document.createElement("img");
+  posterImg.src = anime.poster.originalUrl;
+  posterImg.classList.add("detailsPoster");
+  const infoBlock = document.createElement("div");
+  infoBlock.classList.add("detailsInfo");
+  console.log(detailsData);
+  contentWrapper.appendChild(posterImg);
+  contentWrapper.appendChild(infoBlock);  
+  animeDetails.appendChild(contentWrapper);  
+}
+
 loadTopAnime();
