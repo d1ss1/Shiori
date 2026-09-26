@@ -20,7 +20,15 @@ const statusLabel = {
   ongoing: { English: "ongoing", Russian: "онгоинг" },
   anons: { English: "anons", Russian: "анонс" },
 };
-
+const ratingLabel = {
+  g: "G",
+  pg: "PG",
+  pg_13: "PG-13",
+  r: "R-17",
+  r_plus: "R+",
+};
+const prefixEpisodes = currentLang === "English" ? "Episodes: " : "Эпизодов: ";
+const prefixScore = currentLang === "English" ? "rating " : "рейтинг ";
 function renderData(animeList) {
   animeGrid.innerHTML = "";
   animeList.forEach((element) => {
@@ -43,16 +51,14 @@ function renderData(animeList) {
     divCard.addEventListener("click", function (event) {
       animeGrid.classList.add("hidden");
       animeDetails.classList.remove("hidden");
-      loadAnimeDetails(element.id)
+      animeDetails.textContent = "Loading...";
+      loadAnimeDetails(element.id);
     });
     spanStatusLabel.textContent =
       currentLang === "English" ? "type: " : "тип: ";
     spanStatusValue.textContent = statusLabel[element.status]
       ? statusLabel[element.status][currentLang]
       : "no status";
-    const prefixEpisodes =
-      currentLang === "English" ? "Episodes: " : "Эпизодов: ";
-    const prefixScore = currentLang === "English" ? "rating " : "рейтинг ";
     spanCard.textContent =
       currentLang === "English"
         ? element.name
@@ -180,6 +186,7 @@ async function loadTopAnime() {
 }
 
 async function loadAnimeDetails(id) {
+  animeDetails.innerHTML = "";
   const searchDetails = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -187,27 +194,66 @@ async function loadAnimeDetails(id) {
       query: `{ animes(ids: "${id}"){ id name russian kind poster { originalUrl } rating score status episodes description } }`,
     }),
   };
-  const response = await fetch(
-    "https://shikimori.io/api/graphql",
-    searchDetails,
-  );
-  const detailsData = await response.json();
-  const anime = detailsData.data.animes[0];
-  animeDetails.innerHTML = "";
-  const title = document.createElement("h2")
-  title.textContent = currentLang === "English" ? anime.name : (anime.russian || anime.name);
-  animeDetails.appendChild(title);
-  const contentWrapper = document.createElement("div");
-  contentWrapper.classList.add("wrapper");
-  const posterImg = document.createElement("img");
-  posterImg.src = anime.poster.originalUrl;
-  posterImg.classList.add("detailsPoster");
-  const infoBlock = document.createElement("div");
-  infoBlock.classList.add("detailsInfo");
-  console.log(detailsData);
-  contentWrapper.appendChild(posterImg);
-  contentWrapper.appendChild(infoBlock);  
-  animeDetails.appendChild(contentWrapper);  
+  try {
+    const response = await fetch(
+      "https://shikimori.io/api/graphql",
+      searchDetails,
+    );
+    const detailsData = await response.json();
+    const anime = detailsData.data.animes[0];
+    const title = document.createElement("h2");
+    const type = document.createElement("div");
+    const episodes = document.createElement("div");
+    const status = document.createElement("span");
+    const rating = document.createElement("span");
+    const score = document.createElement("div");
+    const description = document.createElement("div");
+    title.textContent =
+      currentLang === "English" ? anime.name : anime.russian || anime.name;
+    animeDetails.appendChild(title);
+    type.textContent = kindLabels[anime.kind] || anime.kind;
+    const prefixEpisodes =
+      currentLang === "English" ? "Episodes: " : "Эпизодов: ";
+    episodes.textContent = prefixEpisodes + (anime.episodes || "no episodes");
+    status.textContent =
+      statusLabel[anime.status]?.[currentLang] || anime.status;
+    const prefixRating = currentLang === "English" ? "Rating: " : "Рейтинг: ";
+    rating.textContent =
+      prefixRating + (ratingLabel[anime.rating] || "no rating");
+    score.textContent = anime.score;
+    let rawText;
+    if (anime.description) {
+      rawText = anime.description;
+    } else {
+      rawText =
+        currentLang === "English" ? "no description" : "отсутствует описание";
+    }
+    let cleanText = rawText.replace(/\[.*?\]/g, "");
+    description.textContent = cleanText;
+    const contentWrapper = document.createElement("div");
+    contentWrapper.classList.add("wrapper");
+    const posterImg = document.createElement("img");
+    posterImg.src = anime.poster.originalUrl;
+    posterImg.classList.add("detailsPoster");
+    const infoWrapper = document.createElement("div");
+    const infoBlock = document.createElement("div");
+    const scoreBlock = document.createElement("div");
+    infoBlock.classList.add("detailsInfo");
+    console.log(detailsData);
+    contentWrapper.appendChild(posterImg);
+    contentWrapper.appendChild(infoWrapper);
+    infoWrapper.appendChild(infoBlock);
+    infoWrapper.appendChild(scoreBlock);
+    infoBlock.appendChild(type);
+    infoBlock.appendChild(episodes);
+    infoBlock.appendChild(status);
+    infoBlock.appendChild(rating);
+    scoreBlock.appendChild(score);
+    animeDetails.appendChild(contentWrapper);
+    animeDetails.appendChild(description);
+  } catch (error) {
+    console.log("Not found");
+  }
 }
 
 loadTopAnime();
