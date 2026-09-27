@@ -222,3 +222,38 @@ main {
 .hidden {
   display: none;
 }
+.wrapper {
+  display: flex;
+  gap: 150px;
+}
+.infoWrapper {
+  display: flex;
+  gap: 150px;
+}
+.scoreBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stars {
+  color: #4A89D7;
+  font-size: 30px;
+}
+.detailedScore {
+  font-size: 30px;
+  color: #333;
+}
+.scoreLabel {
+  font-size: 15px;
+  color: #233b52;
+}
+.detailsPoster {
+  width: 250px;
+  height: 350px;
+}
+.detailedStatus {
+  display: block;
+}
+.detailedRating {
+  display: block;
+}

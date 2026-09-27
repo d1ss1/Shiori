@@ -207,6 +207,7 @@ async function loadAnimeDetails(id) {
     const status = document.createElement("span");
     const rating = document.createElement("span");
     const score = document.createElement("div");
+    const stars = document.createElement("div");
     const description = document.createElement("div");
     title.textContent =
       currentLang === "English" ? anime.name : anime.russian || anime.name;
@@ -215,12 +216,36 @@ async function loadAnimeDetails(id) {
     const prefixEpisodes =
       currentLang === "English" ? "Episodes: " : "Эпизодов: ";
     episodes.textContent = prefixEpisodes + (anime.episodes || "no episodes");
+    const prefixStatus = currentLang === "English" ? "Status: " : "Статус: ";
     status.textContent =
-      statusLabel[anime.status]?.[currentLang] || anime.status;
+      prefixStatus + (statusLabel[anime.status]?.[currentLang] || anime.status);
     const prefixRating = currentLang === "English" ? "Rating: " : "Рейтинг: ";
     rating.textContent =
       prefixRating + (ratingLabel[anime.rating] || "no rating");
     score.textContent = anime.score;
+    if (anime.score  <= 2) {
+      stars.textContent = "★";
+    } else if (anime.score <= 4) {
+      stars.textContent = "★★";
+    } else if (anime.score <= 6) {
+      stars.textContent = "★★★";
+    } else if (anime.score <= 8) {
+      stars.textContent = "★★★★";
+    } else if (anime.score <= 10) {
+      stars.textContent = "★★★★★";
+    }
+    const scoreLabel = document.createElement("div")
+    if (anime.score <= 3) {
+      scoreLabel.textContent = currentLang === "English" ? "Bad" : "Плохо";
+    } else if (anime.score <= 5) {
+      scoreLabel.textContent = currentLang === "English" ? "Normal" : "Нормально";
+    } else if (anime.score <= 7) {
+      scoreLabel.textContent = currentLang === "English" ? "Good" : "Хорошо";
+    } else if (anime.score <= 8.99) {
+      scoreLabel.textContent = currentLang === "English" ? "Excellent" : "Отлично";
+    } else if (anime.score > 9) {
+      scoreLabel.textContent = currentLang === "English" ? "Great" : "Великолепно";
+    }
     let rawText;
     if (anime.description) {
       rawText = anime.description;
@@ -235,10 +260,17 @@ async function loadAnimeDetails(id) {
     const posterImg = document.createElement("img");
     posterImg.src = anime.poster.originalUrl;
     posterImg.classList.add("detailsPoster");
+    status.classList.add("detailedStatus");
+    rating.classList.add("detailedRating");
     const infoWrapper = document.createElement("div");
     const infoBlock = document.createElement("div");
     const scoreBlock = document.createElement("div");
     infoBlock.classList.add("detailsInfo");
+    infoWrapper.classList.add("infoWrapper");
+    scoreBlock.classList.add("scoreBlock")
+    stars.classList.add("stars");
+    score.classList.add("detailedScore");
+    scoreLabel.classList.add("scoreLabel");
     console.log(detailsData);
     contentWrapper.appendChild(posterImg);
     contentWrapper.appendChild(infoWrapper);
@@ -248,7 +280,9 @@ async function loadAnimeDetails(id) {
     infoBlock.appendChild(episodes);
     infoBlock.appendChild(status);
     infoBlock.appendChild(rating);
+    scoreBlock.appendChild(stars);
     scoreBlock.appendChild(score);
+    scoreBlock.appendChild(scoreLabel);
     animeDetails.appendChild(contentWrapper);
     animeDetails.appendChild(description);
   } catch (error) {
