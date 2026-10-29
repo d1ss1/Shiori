@@ -224,11 +224,12 @@ main {
 }
 .wrapper {
   display: flex;
-  gap: 150px;
+  gap: 30px;
+  margin-top: 15px;
 }
 .infoWrapper {
   display: flex;
-  gap: 150px;
+  gap: 500px;
 }
 .scoreBlock {
   display: flex;
@@ -248,12 +249,32 @@ main {
   color: #233b52;
 }
 .detailsPoster {
-  width: 250px;
-  height: 350px;
+  width: 300px;
+  height: 400px;
 }
 .detailedStatus {
   display: block;
 }
 .detailedRating {
   display: block;
+}
+.detailsContent {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+}
+.sectionHeading {
+  color: #b4b4b4;
+  border-left: 2px solid #777;
+  padding-left: 8px;
+  margin-bottom: 8px;
+}
+.scoreBlock .sectionHeading {
+  align-self: flex-start;
+}
+.title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: normal;
+  color: rgb(17, 34, 51);
+  font-size: 3.2ch;
 }
