@@ -5,7 +5,7 @@ const mainHeadline = document.querySelector(".mainHeadline");
 const animeDetails = document.getElementById("animeDetails");
 
 let animeData = [];
-let currentLang = "English";
+let currentLang = localStorage.getItem("preferredLang") || "English";
 const query = `{ animes(limit: 48) { id name russian kind airedOn { year } poster { originalUrl } rating score status episodes description } }`;
 const kindLabels = {
   tv: "TV Series",
@@ -52,6 +52,7 @@ function renderData(animeList) {
       animeGrid.classList.add("hidden");
       animeDetails.classList.remove("hidden");
       animeDetails.textContent = "Loading...";
+      openedAnime = element.id;
       loadAnimeDetails(element.id);
     });
     spanStatusLabel.textContent =
@@ -114,6 +115,7 @@ function renderData(animeList) {
     divScore.appendChild(spanScoreValue);
   });
 }
+let openedAnime = null;
 mainHeadline.addEventListener("click", function () {
   searchInput.value = "";
   animeGrid.classList.remove("hidden");
@@ -123,10 +125,20 @@ mainHeadline.addEventListener("click", function () {
 document.getElementById("langRu").addEventListener("click", function () {
   currentLang = "Russian";
   renderData(animeData);
+
+  if (openedAnime !== null) {
+    loadAnimeDetails(openedAnime)
+  }
+  localStorage.setItem("preferredLang", currentLang);
 });
 document.getElementById("langEng").addEventListener("click", function () {
   currentLang = "English";
   renderData(animeData);
+   
+  if (openedAnime !== null) {
+    loadAnimeDetails(openedAnime);
+  }
+  localStorage.setItem("preferredLang", currentLang);
 });
 searchInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
@@ -208,7 +220,10 @@ async function loadAnimeDetails(id) {
     const rating = document.createElement("span");
     const score = document.createElement("div");
     const stars = document.createElement("div");
+    const descrHeading = document.createElement("h3");
     const description = document.createElement("div");
+    title.classList.add("title")
+    descrHeading.textContent = currentLang === "English" ? "Description" : "Описание";
     title.textContent =
       currentLang === "English" ? anime.name : anime.russian || anime.name;
     animeDetails.appendChild(title);
@@ -262,9 +277,20 @@ async function loadAnimeDetails(id) {
     posterImg.classList.add("detailsPoster");
     status.classList.add("detailedStatus");
     rating.classList.add("detailedRating");
+    const detailsContent = document.createElement("div");
+    detailsContent.classList.add("detailsContent");
     const infoWrapper = document.createElement("div");
+    const infoHeading = document.createElement("h3");
     const infoBlock = document.createElement("div");
+    const scoreHeading = document.createElement("h3");
     const scoreBlock = document.createElement("div");
+    const descriptionBlock = document.createElement("div");
+    infoHeading.textContent = currentLang === "English" ? "Information" : "Информация";
+    scoreHeading.textContent = currentLang === "English" ? "Rating" : "Рейтинг";
+    descriptionBlock.classList.add("descriptionBlock");
+    infoHeading.classList.add("sectionHeading");
+    scoreHeading.classList.add("sectionHeading");
+    descrHeading.classList.add("sectionHeading");
     infoBlock.classList.add("detailsInfo");
     infoWrapper.classList.add("infoWrapper");
     scoreBlock.classList.add("scoreBlock")
@@ -273,18 +299,23 @@ async function loadAnimeDetails(id) {
     scoreLabel.classList.add("scoreLabel");
     console.log(detailsData);
     contentWrapper.appendChild(posterImg);
-    contentWrapper.appendChild(infoWrapper);
+    contentWrapper.appendChild(detailsContent);
+    detailsContent.appendChild(infoWrapper);
     infoWrapper.appendChild(infoBlock);
     infoWrapper.appendChild(scoreBlock);
+    detailsContent.appendChild(descriptionBlock);
+    descriptionBlock.appendChild(descrHeading);
+    descriptionBlock.appendChild(description);
+    infoBlock.appendChild(infoHeading);
     infoBlock.appendChild(type);
     infoBlock.appendChild(episodes);
     infoBlock.appendChild(status);
     infoBlock.appendChild(rating);
+    scoreBlock.appendChild(scoreHeading);
     scoreBlock.appendChild(stars);
     scoreBlock.appendChild(score);
     scoreBlock.appendChild(scoreLabel);
     animeDetails.appendChild(contentWrapper);
-    animeDetails.appendChild(description);
   } catch (error) {
     console.log("Not found");
   }
